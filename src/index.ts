@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import config from './config';
 import { Movie } from './models/movie.models';
+import { apiRouter } from './routes/api.routes';
 
 /*
 Model - Modelo/Schema/Domínio
@@ -10,14 +11,8 @@ Controller - Controla as Requisições e Respostas
 */
 
 const app = express();
-
 app.use(express.json());
-
-app.get('/', (req, res) => {
-    res.status(200).json({
-        message: 'Conseguimos criar um servidor Express'
-    });
-});
+app.use(apiRouter);
 
 app.listen(config.PORT, async () => {
     console.log('Server funcionando na porta', config.PORT);
