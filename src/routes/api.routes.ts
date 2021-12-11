@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import * as userController from '../controllers/user.controller';
 import * as sessionController from '../controllers/session.controller';
 
 const apiRouter = Router();
@@ -12,11 +13,14 @@ apiRouter.get('/', (req, res) => {
 });
 
 /* ROTAS DE USUÁRIO */
+apiRouter.get('/users/id/:id', userController.view);
+apiRouter.post('/users/destroy/:id', userController.destroy);
 
+/* ROTAS DE SESSÕES */
 apiRouter.post('/users/new', sessionController.create);
 
 /* ROTAS DE FILME */
 
 /* ROTAS DE LISTA */
 
-export { apiRouter };
+export { apiRouter }; 
