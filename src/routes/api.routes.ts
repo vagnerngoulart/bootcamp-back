@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as userController from '../controllers/user.controller';
+import * as sessionController from '../controllers/session.controller';
 
 const apiRouter = Router();
 
@@ -13,7 +13,7 @@ apiRouter.get('/', (req, res) => {
 
 /* ROTAS DE USUÁRIO */
 
-apiRouter.post('/users/new', userController.create);
+apiRouter.post('/users/new', sessionController.create);
 
 /* ROTAS DE FILME */
 
