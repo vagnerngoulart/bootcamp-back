@@ -1,35 +1,64 @@
 import { Request, Response } from 'express'; 
 import { User } from '../models/user.model';
 
-interface IUseResult {
+interface UserResult {
     _id: string;
     name: string;
     email?: string;
     password?: string;
 }
 
-function view(req: Request, res: Response){
+async function view(req: Request, res: Response) {
     const { id } = req.params;
 
-    if(!id){
+    if (!id) {
         return res.status(404).json({
-            message: 'Usuário não encontrato'
+            message: 'Usuário não encontrado'
         });
     }
 
-    User.findById(id, (error: any, result: IUseResult) => {
-        if(error){
-            res.status(500).json(error);
+    const user = await User.findById(id);
+
+    if (!user) {
+        return res.status(404).json({
+            message: 'Usuário não encontrado'
+        });
+    }
+
+    return res.status(200).json({
+        user: {
+            id: user._id,
+            name: user.name
+        }
+    });
+}
+
+async function create(req: Request, res: Response) {
+    const { name, email, password } = req.body;
+
+    const userExists = await User.findOne({ email });
+
+    if (userExists) {
+        return res.status(403).json({
+            message: 'Usuário já cadastrado'
+        });
+    }
+
+    const user = new User({ name, email, password });
+
+    user.save((error: any, result: any): void => {
+        if (error) {
+            console.log('Error: ', typeof error);
+            res.json(error);
         }
 
-        return res.status(200).json({
-            user: {
+        res.status(201).json(
+            {
                 id: result._id,
                 name: result.name
             }
-        })
+        );
     });
-
 }
 
 async function destroy(req: Request, res: Response) {
@@ -54,6 +83,6 @@ async function destroy(req: Request, res: Response) {
     return res.status(200).json({
         message: 'Usuário apagado com sucesso.'
     });
-}  
+}
 
-export { view, destroy };
+export { view, create, destroy };
