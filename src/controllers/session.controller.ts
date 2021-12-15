@@ -21,7 +21,7 @@ function index(req: Request, res: Response) {
 
     return res.status(200).json({
         userId: req.user
-    })
+    });
 }
 
 async function create(req: Request, res: Response) {
@@ -66,7 +66,7 @@ function createAccessToken(userId: string) {
         },
         token,
         {
-            expiresIn: 900 // 15min
+            expiresIn: 86400 // 15min
         }
     );
 

@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
-import { Movie } from '../models/movie.models';
+import { Movie } from '../models/movie.model';
+import { paginate } from '../middlewares/pagination';
 
 function index(req: Request, res: Response) {
+    const page: string = req.query.page as string;
 
     Movie.find((error, result) => {
         if (error) {
@@ -10,9 +12,9 @@ function index(req: Request, res: Response) {
             });
         }
 
-        return res.status(201).json({
-            result
-        });
+        return res.status(201).json(
+            paginate(result, 10, parseInt(page))
+        );
     }); 
 }
 
@@ -61,7 +63,9 @@ function view(req: Request, res: Response) {
 async function search(req: Request, res: Response) {
     const { search } = req.params;
 
-    const result = await Movie.find({ $or: [{ name: search }, { description: search }] }).catch(error => {
+    const regex = new RegExp(search, 'gi');
+
+    const result = await Movie.find({ name: regex }).catch(error => {
         console.log(error);
 
         return res.status(500).json({
